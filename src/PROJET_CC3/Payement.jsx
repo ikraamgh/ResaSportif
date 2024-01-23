@@ -15,7 +15,7 @@ export default function Payement() {
     const [cvvCode, setCvvCode] = useState("");
 
     useEffect(() => {
-        fetch(`https://mocki.io/v1/fb3369dc-9221-4532-a242-afd2a2bac9fb`)
+        fetch(`https://mocki.io/v1/66489676-df51-41e4-bf64-e8360962df90`)
             .then((response) => response.json())
             .then((items) => {
                 dispatch(setListItems(items));
