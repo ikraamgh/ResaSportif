@@ -23,7 +23,7 @@ const Home = () => {
         './PROJET_CC3/Home5.png',
         './PROJET_CC3/Home6.png',
         './PROJET_CC3/Home7.jpg',
-    ];
+    ]
 
     useEffect(() => {
         const intervalId = setInterval(() => {
@@ -38,7 +38,7 @@ const Home = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        fetch(`https://mocki.io/v1/ac2b538d-def8-4e61-96ab-699b019db96d`)
+        fetch(`https://mocki.io/v1/edf53efb-21b1-4db0-8885-87a0558fff96`)
             .then((response) => response.json())
             .then((items) => {
                 dispatch(setListItems(items));

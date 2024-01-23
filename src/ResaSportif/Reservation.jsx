@@ -14,7 +14,7 @@ export default function Reservation() {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        fetch(`https://mocki.io/v1/ac2b538d-def8-4e61-96ab-699b019db96d`)
+        fetch(`https://mocki.io/v1/edf53efb-21b1-4db0-8885-87a0558fff96`)
             .then((response) => response.json())
             .then((items) => {
                 dispatch(setListItems(items));
@@ -64,7 +64,7 @@ export default function Reservation() {
                 <br />
                 <div className="back-button">
                     <Link to={`/Details/${id}`}>
-                        <img src={"../../PROJET_CC3/en-arriere.png"} alt="Back" style={{ width: '30px' }} />
+                        <img src={"./PROJET_CC3/en-arriere.png"} alt="Back" style={{ width: '30px' }} />
                     </Link>
                 </div>
                 <br />
