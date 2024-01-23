@@ -24,7 +24,7 @@ export default function Login() {
                 <div className='card_S'>
                     <div className="back-button">
                         <Link to={`/`}>
-                            <img src={"../../../../../../../../PROJET_CC3/en-arriere.png"} alt="Back" style={{ width: '30px' }} />
+                            <img src={process.env.PUBLIC_URL +"../../../../../../../../PROJET_CC3/en-arriere.png"} alt="Back" style={{ width: '30px' }} />
                         </Link>
                     </div>
                     <h1 className='text-center '>S'inscrire</h1>
