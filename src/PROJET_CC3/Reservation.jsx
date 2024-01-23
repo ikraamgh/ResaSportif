@@ -14,7 +14,7 @@ export default function Reservation() {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        fetch(`https://mocki.io/v1/66489676-df51-41e4-bf64-e8360962df90`)
+        fetch(`https://mocki.io/v1/ac2b538d-def8-4e61-96ab-699b019db96d`)
             .then((response) => response.json())
             .then((items) => {
                 dispatch(setListItems(items));
