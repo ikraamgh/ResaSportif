@@ -14,7 +14,7 @@ import Item from "./Item";
 export default function Root() {
     return (
         <Provider store={store}>
-            <BrowserRouter>
+            <BrowserRouter basename="/ResaSportif">
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/Services" element={<Item />} />
