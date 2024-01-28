@@ -71,7 +71,7 @@ const Home = () => {
                 
                 <div className="home-container">
                     <div className="description-container">
-                        <h1 style={{ color: "rgb(199, 0, 0)", fontSize: "2.5rem" }}><b>Reserver Les <br /> Meilleurs Salles <br /> De Sports Là</b></h1>
+                        <h1><b>Reserver Les <br /> Meilleurs Salles <br /> De Sports Là</b></h1>
                         <br /><br />
                         <h4 className="description-text">
                             Bienvenue sur ResaSportive, votre plateforme de réservation d'installations sportives. Réservez facilement des salles de sport, de gym, de danse et bien plus encore.
@@ -86,7 +86,8 @@ const Home = () => {
                     <img
                         src={images[currentImageIndex]}
                         alt={`Image ${currentImageIndex + 1}`}
-                        style={{ width: '100%', height: 700 }}
+                        style={{ width: '100%'}}
+                        class="imgHome"
                     />
                 </div>
 
@@ -117,7 +118,7 @@ const Home = () => {
                         <br />
                         <div className="row">
                             {items.map((item, index) => (
-                                <div className="col-4" key={index}>
+                                <div className="col-md-4 col-xd-12" key={index}>
                                     <Item
                                         id={item.id}
                                         title={item.title}
@@ -147,14 +148,13 @@ const Home = () => {
                     <p>Veuillez partager votre expérience avec nous et nous faire savoir si <br /> nous pourrions faire quelque chose pour nous améliorer.</p>
                     <br />
                     <div className="avis-container">
-                        <input type="text" style={{ marginBottom: 20, marginRight: 50, width: 400 }} className='form-control' placeholder="Entrez votre nom ici..." value={userNom} onChange={(e) => setUserNom(e.target.value)} />
+                        <input type="text" className='form-control fo1' placeholder="Entrez votre nom ici..." value={userNom} onChange={(e) => setUserNom(e.target.value)} />
                         <br />
-                        <input type="text" style={{ marginBottom: 20, width: 400 }} className='form-control' placeholder="Entrez votre email ici..." value={userEmail} onChange={(e) => setUserEmail(e.target.value)} />
+                        <input type="text" className='form-control fo2' placeholder="Entrez votre email ici..." value={userEmail} onChange={(e) => setUserEmail(e.target.value)} />
                         <br />
+                        <textarea type="text" className='form-control fo3' placeholder="Entrez votre avis ici..." value={userAvis} onChange={(e) => setUserAvis(e.target.value)} />
                         <br />
-                        <textarea type="text" style={{ marginRight: 40, width: 400 }} className='form-control' placeholder="Entrez votre avis ici..." value={userAvis} onChange={(e) => setUserAvis(e.target.value)} />
-                        <br />
-                        <button style={{ margin: 10, marginRight: 100, width: 300 }} className='btn btn-secondary' onClick={addAvis}>Ajouter votre avis</button>
+                        <button className='btn btn-secondary for4' onClick={addAvis}>Ajouter votre avis</button>
                     </div>
                 </section>
                 <br />
@@ -170,7 +170,7 @@ const Home = () => {
                         <div className="col-md-6">
                             <br />
                             <br />
-                            <p style={{ marginLeft: 50, height: 40, width: 400 }}>Faites-nous part de vos questions, suggestions et préoccupations en remplissant le formulaire de contact ci-dessous.</p>
+                            <p>Faites-nous part de vos questions, suggestions et préoccupations en remplissant le formulaire de contact ci-dessous.</p>
                         </div>
                         <div className="col-md-6">
                             <form onSubmit={handleSubmit}>

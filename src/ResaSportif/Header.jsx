@@ -22,7 +22,7 @@ export const Header = () => {
                 </button>
                 <div className="collapse navbar-collapse container" id="navbarTogglerDemo01">
                     <Link to={"/"} >
-                        <img width={150} src={'./PROJET_CC3/resaSportif.png'} />
+                        <img width={150} src={'./PROJET_CC3/resaSportif.png'} class="logo"/>
                     </Link>
                     <div></div>
                     <div></div>
