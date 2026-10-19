@@ -4,7 +4,6 @@ import { setListItems } from "./ItemsSlice";
 import Item from './Item';
 import "../index.css";
 import { Header } from './Header';
-import { Link } from 'react-router-dom';
 import Footer from './Footer';
 
 const Home = () => {
