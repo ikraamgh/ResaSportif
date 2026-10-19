@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { setListItems } from "./ItemsSlice";
 import { Header } from "./Header";
-import { useState } from "react";
 import Footer from "./Footer";
 
 export default function Informations() {
@@ -11,91 +10,134 @@ export default function Informations() {
     const dispatch = useDispatch();
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
+    const [phone, setPhone] = useState("");
+    const [message, setMessage] = useState("");
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-    };
+    const handleSubmit = (event) => { event.preventDefault(); };
 
     useEffect(() => {
-        fetch(`https://mocki.io/v1/edf53efb-21b1-4db0-8885-87a0558fff96`)
+        fetch(`/data/items.json`)
             .then((response) => response.json())
-            .then((items) => {
-                dispatch(setListItems(items));
-            });
+            .then((items) => { dispatch(setListItems(items)); });
     }, [dispatch]);
 
     const items = useSelector((state) => state.items.listItems);
     const selectedItem = items.find((i) => i.id === id);
 
+    if (!selectedItem) {
+        return (
+            <div className="page-wrapper">
+                <Header />
+                <div className="container" style={{ padding: '80px 20px', textAlign: 'center' }}>
+                    <p style={{ color: 'var(--text-secondary)' }}>Chargement...</p>
+                </div>
+            </div>
+        );
+    }
+
     return (
-        <>
+        <div className="page-wrapper">
             <Header />
-            <div className="container">
-                <br />
-                <div className="back-button">
-                    <Link to={`/Details/Reservation/${id}`}>
-                        <img src={"./PROJET_CC3/en-arriere.png"} alt="Back" style={{ width: '30px' }} />
-                    </Link>
-                    <form onSubmit={handleSubmit}>
-                        <div className="container my-4">
-                            <div className="container row">
+            <div className="container" style={{ paddingTop: 36, paddingBottom: 72 }}>
+                <Link to={`/Details/Reservation/${id}`} className="rs-back-link">← Retour à la réservation</Link>
+
+                <div style={{ marginBottom: 40 }}>
+                    <h1 style={{ color:'var(--green-deep)', fontSize:'1.8rem', marginBottom:8 }}>Vos informations</h1>
+                    <p style={{ color:'var(--text-secondary)' }}>Renseignez vos coordonnées pour finaliser la réservation.</p>
+                </div>
+
+                <form onSubmit={handleSubmit}>
+                    <div className="row g-5">
+                        {/* Form */}
+                        <div className="col-md-7">
+                            <div className="row g-3">
                                 <div className="col-md-6">
-                                    <div>
-                                        <h2 className="text text-danger">Renseignez vos informations</h2>
-                                        <hr />
-                                        <p>Donnez-nous plus de détails sur vous</p>
-                                    </div>
-                                    <div>
-                                        <div className="row">
-                                            <div className="col-md-6">
-                                                <label className="form-label">Nom</label>
-                                                <input type="text" className="form-control" maxLength="100" value={name} onChange={(e) => setName(e.target.value)} required />
-                                            </div>
-                                            <div className="col-md-6">
-                                                <label className="form-label">Adresse e-mail</label>
-                                                <input type="email" className="form-control" value={email} onChange={(e) => setEmail(e.target.value)} required />
-                                            </div>
-                                        </div>
-                                        <br />
-                                        <div className="mb-3">
-                                            <label className="form-label">Numéro de téléphone</label>
-                                            <input type="tel" className="form-control" />
-                                        </div>
-                                        <div className="mb-3">
-                                            <label className="form-label">Ajoutez votre message</label>
-                                            <textarea className="form-control" rows="3"></textarea>
-                                        </div>
+                                    <div className="rs-form-group">
+                                        <label className="rs-label">Nom *</label>
+                                        <input
+                                            className="rs-input"
+                                            type="text"
+                                            placeholder="Votre nom complet"
+                                            maxLength="100"
+                                            value={name}
+                                            onChange={(e) => setName(e.target.value)}
+                                            required
+                                        />
                                     </div>
                                 </div>
-                                <div className="col-md-1"></div>
-                                <div className="col-md-4">
-                                    <div>
-                                        <p className="text text-danger">Détails de la réservation</p>
-                                        <hr />
-                                        <p>{selectedItem.title}</p>
-                                        <p>Date sélectionnée: {`${selectedDate}/${displayedMonth}/${displayedYear}`}</p>
-                                        <p>{`${selectedTime}:00 ${selectedTime < 12 ? 'AM' : 'PM'}`}</p>
+                                <div className="col-md-6">
+                                    <div className="rs-form-group">
+                                        <label className="rs-label">Adresse e-mail *</label>
+                                        <input
+                                            className="rs-input"
+                                            type="email"
+                                            placeholder="vous@exemple.com"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            required
+                                        />
                                     </div>
-                                    <div>
-                                        <hr />
-                                        <p className="text text-danger">Détails du paiement</p>
-                                        <p>Total</p>
-                                        <p>{selectedItem.Prix} dh/h</p>
+                                </div>
+                                <div className="col-12">
+                                    <div className="rs-form-group">
+                                        <label className="rs-label">Numéro de téléphone</label>
+                                        <input
+                                            className="rs-input"
+                                            type="tel"
+                                            placeholder="+212 6XX XXX XXX"
+                                            value={phone}
+                                            onChange={(e) => setPhone(e.target.value)}
+                                        />
                                     </div>
-                                    <div className="mb-3">
-                                        <Link to={`/Payement/${selectedItem.id}`} >
-                                            <button type="submit" style={{ width: '100%' }} className="btn btn-danger">
-                                                Réserver
-                                            </button>
-                                        </Link>
+                                </div>
+                                <div className="col-12">
+                                    <div className="rs-form-group">
+                                        <label className="rs-label">Message (optionnel)</label>
+                                        <textarea
+                                            className="rs-textarea"
+                                            placeholder="Informations supplémentaires..."
+                                            value={message}
+                                            onChange={(e) => setMessage(e.target.value)}
+                                            rows="4"
+                                        />
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </form>
-                </div>
+
+                        {/* Booking summary */}
+                        <div className="col-md-5">
+                            <div className="booking-summary">
+                                <h5>Récapitulatif</h5>
+                                <div className="booking-summary-row">
+                                    <span className="label">Terrain</span>
+                                    <span className="value">{selectedItem.title}</span>
+                                </div>
+                                <div className="booking-summary-row">
+                                    <span className="label">Date</span>
+                                    <span className="value">{selectedDate}/{displayedMonth}/{displayedYear}</span>
+                                </div>
+                                <div className="booking-summary-row">
+                                    <span className="label">Heure</span>
+                                    <span className="value">{selectedTime}:00 {selectedTime < 12 ? 'AM' : 'PM'}</span>
+                                </div>
+                                <div className="booking-summary-row booking-summary-total" style={{ marginTop: 8 }}>
+                                    <span className="label">Total</span>
+                                    <span className="value">{selectedItem.Prix} dh/h</span>
+                                </div>
+                                <div style={{ marginTop: 24 }}>
+                                    <Link to={`/Payement/${selectedItem.id}`}>
+                                        <button type="submit" className="btn-rs-primary btn-rs-full">
+                                            Continuer vers le paiement →
+                                        </button>
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
             <Footer />
-        </>
-    )
+        </div>
+    );
 }

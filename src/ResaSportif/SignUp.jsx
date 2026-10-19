@@ -5,52 +5,73 @@ import { Header } from "./Header";
 export default function SignUp() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
     const handleSignUp = () => {
+        if (!username || !password) {
+            setErrorMessage('Veuillez remplir tous les champs.');
+            return;
+        }
+        setErrorMessage('');
         console.log('SIGN UP:', { username, password });
     };
 
     return (
-        <>
+        <div className="page-wrapper">
             <Header />
-            <div className="signup-page" style={{ backgroundImage: `url('./PROJET_CC3/background.jpg')`, width: '100%' }}>
-                <div className='card_S'>
-                <div className="back-button">
-                    <Link to={`/`}>
-                        <img src={"./PROJET_CC3/en-arriere.png"} alt="Back" style={{ width: '30px' }} />
-                    </Link>
-                </div>
-                    <h1 className='text-center '>Se connecter</h1>
-                    <form className="card_S2">
-                        <label><h6>Nom utilisateur: </h6></label>
-                        <br />
-                        <input className='form-control px-3' type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+            <div className="auth-page">
+                <div className="auth-card">
+                    <Link to="/" className="auth-back">← Retour à l'accueil</Link>
 
-                        <label><h6>Mot de passe: </h6></label>
-                        <br />
-                        <input className='form-control ' type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-
-                        <br />
-                    </form>
-                    <div className="d-flex justify-content-center">
-                        <button className='btn btn-danger' style={{ width: 300 }} type="button" onClick={handleSignUp}>
-                            <b>Se connecter</b>
-                        </button>
+                    <div className="auth-brand">
+                        <span className="auth-brand-text"><span>Resa</span>Sportif</span>
                     </div>
-                    <br />
-                    <div class="login-separator-wrapper">
-                        <div class="login-separator-component split-line">
-                            <span class="separator-line"></span>
-                            <h5>Ou connectez-vous avec</h5>
-                            <span class="separator-line"></span>
+
+                    <h2 className="auth-title">Se connecter</h2>
+                    <p className="auth-subtitle">Accédez à votre espace et gérez vos réservations.</p>
+
+                    <div className="rs-form-group">
+                        <label className="rs-label">Nom d'utilisateur</label>
+                        <input
+                            className="rs-input"
+                            type="text"
+                            placeholder="Votre nom d'utilisateur"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                        />
+                    </div>
+
+                    <div className="rs-form-group">
+                        <label className="rs-label">Mot de passe</label>
+                        <input
+                            className="rs-input"
+                            type="password"
+                            placeholder="Votre mot de passe"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                    </div>
+
+                    {errorMessage && (
+                        <div style={{ color:'#dc2626', fontSize:'0.88rem', marginBottom:16, padding:'10px 14px', background:'#fef2f2', borderRadius:'var(--radius-sm)', border:'1px solid #fecaca' }}>
+                            {errorMessage}
                         </div>
+                    )}
+
+                    <button className="btn-rs-primary btn-rs-full" style={{ marginBottom:20 }} onClick={handleSignUp}>
+                        Se connecter →
+                    </button>
+
+                    <div style={{ textAlign:'center', borderTop:'1px solid var(--border)', paddingTop:20 }}>
+                        <p style={{ color:'var(--text-secondary)', fontSize:'0.9rem', marginBottom:0 }}>
+                            Pas encore de compte ?{' '}
+                            <Link to="/login" style={{ color:'var(--green-deep)', fontWeight:700 }}>
+                                S'inscrire
+                            </Link>
+                        </p>
                     </div>
-                    <br />
-                    <h6 className="card_S3">
-                        Already have an account? <span className="text-danger font-weight-bold"><Link to="/login">Log in</Link></span>
-                    </h6>
                 </div>
             </div>
-        </>
+        </div>
     );
-};
+}

@@ -8,9 +8,9 @@ import { Link } from 'react-router-dom';
 import Footer from './Footer';
 
 const avis = [
-    { id: 1, email: 'ahmed@ggmail.com', nom: 'Ahmed', avis: 'Très satisfait de la qualité de votre service' },
-    { id: 2, email: 'said@gmail.com', nom: 'Said', avis: 'Les prix sont corrects et le bien est superbe' },
-    { id: 3, email: 'achraf@gmail.com', nom: 'Achraf', avis: 'La location s\'est faite rapidement et en toute sécurité' },
+    { id: 1, nom: 'Ahmed', avis: 'Très satisfait de la qualité de votre service. Réservation rapide et sans problème.' },
+    { id: 2, nom: 'Said', avis: 'Les prix sont corrects et le terrain est superbe. Je recommande vivement !' },
+    { id: 3, nom: 'Achraf', avis: 'La location s\'est faite rapidement et en toute sécurité. Excellent service.' },
 ];
 
 const Home = () => {
@@ -23,26 +23,23 @@ const Home = () => {
         './PROJET_CC3/Home5.png',
         './PROJET_CC3/Home6.png',
         './PROJET_CC3/Home7.jpg',
-    ]
+    ];
 
     useEffect(() => {
         const intervalId = setInterval(() => {
             setCurrentImageIndex((prevIndex) =>
                 prevIndex === images.length - 1 ? 0 : prevIndex + 1
             );
-        }, 2000);
-
+        }, 3000);
         return () => clearInterval(intervalId);
-    }, [currentImageIndex, images.length]);
+    }, [images.length]);
 
     const dispatch = useDispatch();
 
     useEffect(() => {
         fetch(`/data/items.json`)
             .then((response) => response.json())
-            .then((items) => {
-                dispatch(setListItems(items));
-            });
+            .then((items) => { dispatch(setListItems(items)); });
     }, [dispatch]);
 
     const items = useSelector((state) => state.items.listItems);
@@ -50,75 +47,113 @@ const Home = () => {
     const [userAvis, setUserAvis] = useState('');
     const [userEmail, setUserEmail] = useState('');
     const [userNom, setUserNom] = useState('');
+    const [avisState, setAvisState] = useState(avis);
     const [message, setMessage] = useState('');
     const [phone, setPhone] = useState('');
-    const handleSubmit = (e) => {
-        e.preventDefault();
-    }
+
+    const handleSubmit = (e) => { e.preventDefault(); };
 
     const addAvis = () => {
-        const newAvis = { id: avis.length + 1, nom: userNom, avis: userAvis };
+        if (!userNom.trim() || !userAvis.trim()) return;
+        const newAvis = { id: avisState.length + 1, nom: userNom, avis: userAvis };
+        setAvisState([...avisState, newAvis]);
         setUserAvis('');
         setUserEmail('');
         setUserNom('');
-        avis.push(newAvis);
     };
 
     return (
-        <div>
-            <div className='bg'>
-                <Header />
-                
-                <div className="home-container">
-                    <div className="description-container">
-                        <h1><b>Reserver Les <br /> Meilleurs Salles <br /> De Sports Là</b></h1>
-                        <br /><br />
-                        <h4 className="description-text">
-                            Bienvenue sur ResaSportive, votre plateforme de réservation d'installations sportives. Réservez facilement des salles de sport, de gym, de danse et bien plus encore.
-                        </h4>
-                        <br /><br />
-                        <div>
+        <div className="page-wrapper">
+            <Header />
+
+            {/* ── Hero ── */}
+            <section className="rs-hero">
+                <img
+                    src={images[currentImageIndex]}
+                    alt="Sports facility"
+                    className="rs-hero-image"
+                />
+                <div className="rs-hero-overlay" />
+                <div className="container">
+                    <div className="rs-hero-content">
+                        <div className="rs-hero-badge">Plateforme #1 de réservation sportive</div>
+                        <h1>
+                            Trouvez votre terrain.<br />
+                            <span className="lime-word">Réservez</span> en quelques clics.
+                        </h1>
+                        <p>
+                            Accédez aux meilleurs terrains de sport près de chez vous.
+                            Football, basketball, tennis et bien plus encore.
+                        </p>
+                        <div className="rs-hero-actions">
                             <Link to="/login">
-                                <button className='btn btn-red'><h6>Se Connecter</h6></button>
+                                <button className="btn-rs-primary">Réserver maintenant →</button>
                             </Link>
+                            <a href="#salles">
+                                <button className="btn-rs-outline">Voir les terrains</button>
+                            </a>
                         </div>
                     </div>
-                    <img
-                        src={images[currentImageIndex]}
-                        alt={`Image ${currentImageIndex + 1}`}
-                        style={{ width: '100%'}}
-                        class="imgHome"
-                    />
                 </div>
+            </section>
 
-                <br />
-                
-                <div className="advantages-container">
-                    <div className="advantage">
-                        <img src="PROJET_CC3/icone-avantage1.png" alt="Avantage 1" />
-                        <h6>Facilité de Réservation</h6>
-                    </div>
-                    <div className="advantage">
-                        <img src="PROJET_CC3/icone-avantage2.png" alt="Avantage 2" />
-                        <h6 style={{ color: "#383838" }}>Diversité d'Installations</h6>
-                    </div>
-                    <div className="advantage">
-                        <img src="PROJET_CC3/icone-avantage3.png" alt="Avantage 3" />
-                        <h6>Gestion de Compte Personnalisée</h6>
+            {/* ── Advantages ── */}
+            <section className="advantages-section">
+                <div className="container">
+                    <div className="row g-4">
+                        <div className="col-md-4">
+                            <div className="advantage-card">
+                                <div className="advantage-icon">
+                                    <img src="PROJET_CC3/icone-avantage1.png" alt="Facilité" />
+                                </div>
+                                <h6>Facilité de Réservation</h6>
+                                <p style={{color:'var(--text-secondary)', fontSize:'0.9rem', marginTop:8}}>
+                                    Réservez votre terrain en moins de 2 minutes, 24h/24.
+                                </p>
+                            </div>
+                        </div>
+                        <div className="col-md-4">
+                            <div className="advantage-card">
+                                <div className="advantage-icon">
+                                    <img src="PROJET_CC3/icone-avantage2.png" alt="Diversité" />
+                                </div>
+                                <h6>Diversité d'Installations</h6>
+                                <p style={{color:'var(--text-secondary)', fontSize:'0.9rem', marginTop:8}}>
+                                    Plus de 7 types de sports disponibles dans notre réseau.
+                                </p>
+                            </div>
+                        </div>
+                        <div className="col-md-4">
+                            <div className="advantage-card">
+                                <div className="advantage-icon">
+                                    <img src="PROJET_CC3/icone-avantage3.png" alt="Compte" />
+                                </div>
+                                <h6>Gestion de Compte</h6>
+                                <p style={{color:'var(--text-secondary)', fontSize:'0.9rem', marginTop:8}}>
+                                    Gérez vos réservations et votre historique facilement.
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </section>
 
-                <br />
-                <br />
-                
-                <div className="bg2">
-                    <br />
-                    <div className="container">
-                        <h1 className='text-center'><b>Salles Disponible</b></h1>
-                        <br />
-                        <div className="row">
+            {/* ── Salles ── */}
+            <section className="salles-section" id="salles">
+                <div className="container">
+                    <p className="section-subtitle text-center" style={{textAlign:'center', marginBottom:4}}>NOS INSTALLATIONS</p>
+                    <h2 className="section-title text-center" style={{textAlign:'center', marginBottom:48}}>
+                        Salles Disponibles
+                    </h2>
+                    {items.length === 0 ? (
+                        <div className="text-center" style={{padding:'60px 0', color:'var(--text-secondary)'}}>
+                            <div style={{fontSize:'2rem', marginBottom:12}}>⏳</div>
+                            <p>Chargement des terrains...</p>
+                        </div>
+                    ) : (
+                        <div className="row g-4">
                             {items.map((item, index) => (
-                                <div className="col-md-4 col-xd-12" key={index}>
+                                <div className="col-md-4 col-sm-6" key={index}>
                                     <Item
                                         id={item.id}
                                         title={item.title}
@@ -129,68 +164,81 @@ const Home = () => {
                                 </div>
                             ))}
                         </div>
-                    </div>
-                    <br />
-                    <br />
+                    )}
                 </div>
-                
-                <section className="avis-section">
-                    <h1 className="text-center">Avis Client</h1>
+            </section>
+
+            {/* ── Avis ── */}
+            <section className="avis-section" id="avis">
+                <div className="container">
+                    <p className="section-subtitle text-center" style={{textAlign:'center', marginBottom:4}}>CE QUE DISENT NOS CLIENTS</p>
+                    <h2 className="section-title text-center" style={{textAlign:'center', marginBottom:40}}>Avis Clients</h2>
+
                     <div className="avis-container">
-                        {avis.map((avi) => (
-                            <div className="avis" key={avi.id}>
+                        {avisState.map((avi) => (
+                            <div className="avis-card" key={avi.id}>
                                 <h2>{avi.nom}</h2>
                                 <h6>{avi.avis}</h6>
                             </div>
                         ))}
                     </div>
-                    <br /><hr />
-                    <p>Veuillez partager votre expérience avec nous et nous faire savoir si <br /> nous pourrions faire quelque chose pour nous améliorer.</p>
-                    <br />
-                    <div className="avis-container">
-                        <input type="text" className='form-control fo1' placeholder="Entrez votre nom ici..." value={userNom} onChange={(e) => setUserNom(e.target.value)} />
-                        <br />
-                        <input type="text" className='form-control fo2' placeholder="Entrez votre email ici..." value={userEmail} onChange={(e) => setUserEmail(e.target.value)} />
-                        <br />
-                        <textarea type="text" className='form-control fo3' placeholder="Entrez votre avis ici..." value={userAvis} onChange={(e) => setUserAvis(e.target.value)} />
-                        <br />
-                        <button className='btn btn-secondary for4' onClick={addAvis}>Ajouter votre avis</button>
-                    </div>
-                </section>
-                <br />
-            </div>
 
-            <br />
-            
-            <section>
+                    <hr style={{borderColor:'var(--border)', margin:'32px 0'}} />
+
+                    <div className="avis-form">
+                        <h5 style={{fontWeight:700, color:'var(--green-deep)', marginBottom:4}}>Partagez votre expérience</h5>
+                        <p style={{color:'var(--text-secondary)', fontSize:'0.9rem', marginBottom:20}}>
+                            Votre avis nous aide à nous améliorer.
+                        </p>
+                        <div className="rs-form-group">
+                            <label className="rs-label">Votre nom</label>
+                            <input className="rs-input" type="text" placeholder="Ex: Ahmed" value={userNom} onChange={(e) => setUserNom(e.target.value)} />
+                        </div>
+                        <div className="rs-form-group">
+                            <label className="rs-label">Votre email</label>
+                            <input className="rs-input" type="email" placeholder="vous@exemple.com" value={userEmail} onChange={(e) => setUserEmail(e.target.value)} />
+                        </div>
+                        <div className="rs-form-group">
+                            <label className="rs-label">Votre avis</label>
+                            <textarea className="rs-textarea" placeholder="Partagez votre expérience..." value={userAvis} onChange={(e) => setUserAvis(e.target.value)} />
+                        </div>
+                        <button className="btn-rs-primary btn-rs-full" onClick={addAvis}>
+                            Publier mon avis
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            {/* ── Contact ── */}
+            <section className="contact-section" id="contact">
                 <div className="container">
-                    <h1 className="text-center">Avez-vous quelque chose à dire?</h1>
-                    <br />
-                    <div className="row">
+                    <div className="row align-items-center g-5">
                         <div className="col-md-6">
-                            <br />
-                            <br />
-                            <p>Faites-nous part de vos questions, suggestions et préoccupations en remplissant le formulaire de contact ci-dessous.</p>
+                            <p className="section-subtitle" style={{marginBottom:4}}>NOUS CONTACTER</p>
+                            <h2 className="section-title" style={{marginBottom:16}}>Avez-vous quelque chose à dire?</h2>
+                            <p style={{color:'var(--text-secondary)', lineHeight:1.7}}>
+                                Faites-nous part de vos questions, suggestions et préoccupations
+                                en remplissant le formulaire de contact ci-dessous.
+                            </p>
                         </div>
                         <div className="col-md-6">
                             <form onSubmit={handleSubmit}>
-                                <div className="form-group mb-3">
-                                    <input type="text" className="form-control with-bottom-line" placeholder="Votre telephone" value={phone} onChange={(e) => setPhone(e.target.value)} />
+                                <div className="rs-form-group">
+                                    <label className="rs-label">Téléphone</label>
+                                    <input className="rs-input" type="tel" placeholder="+212 6XX XXX XXX" value={phone} onChange={(e) => setPhone(e.target.value)} />
                                 </div>
-                                <div className="form-group mb-3">
-                                    <textarea className="form-control with-bottom-line" placeholder="Votre message" value={message} onChange={(e) => setMessage(e.target.value)} />
+                                <div className="rs-form-group">
+                                    <label className="rs-label">Message</label>
+                                    <textarea className="rs-textarea" placeholder="Votre message..." value={message} onChange={(e) => setMessage(e.target.value)} />
                                 </div>
-                                <button type="submit" className="btn btn-danger w-100">Envoyer</button>
+                                <button type="submit" className="btn-rs-dark">Envoyer le message</button>
                             </form>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <br /><br /><br />
-            
             <Footer />
-
         </div>
     );
 };

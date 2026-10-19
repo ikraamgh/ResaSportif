@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { setListItems } from "./ItemsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { Header } from "./Header";
-import { useState } from "react";
 import Footer from "./Footer";
 
 export default function Payement() {
@@ -13,179 +12,179 @@ export default function Payement() {
     const [cardNumber, setCardNumber] = useState("");
     const [MMYY, setMMYY] = useState("");
     const [cvvCode, setCvvCode] = useState("");
+    const [payMethod, setPayMethod] = useState("card"); // 'card' | 'paypal'
 
     useEffect(() => {
-        fetch(`https://mocki.io/v1/edf53efb-21b1-4db0-8885-87a0558fff96`)
+        fetch(`/data/items.json`)
             .then((response) => response.json())
-            .then((items) => {
-                dispatch(setListItems(items));
-            });
+            .then((items) => { dispatch(setListItems(items)); });
     }, [dispatch]);
 
     const items = useSelector((state) => state.items.listItems);
     const selectedItem = items.find((i) => i.id === id);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-    };
+    const handleSubmit = (e) => { e.preventDefault(); };
+
+    if (!selectedItem) {
+        return (
+            <div className="page-wrapper">
+                <Header />
+                <div className="container" style={{ padding: '80px 20px', textAlign: 'center' }}>
+                    <p style={{ color: 'var(--text-secondary)' }}>Chargement...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
-        <>
+        <div className="page-wrapper">
             <Header />
-            <div className="container">
-                <br />
-                <div className="back-button">
-                    <Link to={`/Details/Reservation/Informations/${selectedItem.id}/${selectedDate}/${displayedMonth}/${displayedYear}/${selectedTime}`}>
-                        <img className="img" src={"./PROJET_CC3/en-arriere.png"} alt="Back" style={{ width: '30px' }} />
-                    </Link>
+            <div className="container" style={{ paddingTop: 36, paddingBottom: 72 }}>
+                <Link
+                    to={`/Details/Reservation/Informations/${selectedItem.id}/${selectedDate}/${displayedMonth}/${displayedYear}/${selectedTime}`}
+                    className="rs-back-link"
+                >
+                    ← Retour aux informations
+                </Link>
+
+                <div style={{ marginBottom: 40 }}>
+                    <h1 style={{ color:'var(--green-deep)', fontSize:'1.8rem', marginBottom:8 }}>Paiement</h1>
+                    <p style={{ color:'var(--text-secondary)' }}>Sécurisez votre réservation en complétant le paiement.</p>
                 </div>
-                <br />
-                <div class="container cont">
-                    <div class="row">
-                        <div class="col-lg-4 mb-lg-0 mb-3">
-                            <div class="card_Pay p-3">
-                                <div class="img-box">
-                                    <img src="https://www.freepnglogos.com/uploads/visa-logo-download-png-21.png" alt="" />
-                                </div>
-                                <div class="number">
-                                    <label class="fw-bold" for="">**** **** **** 1060</label>
-                                </div>
-                            </div>
+
+                <div className="row g-5">
+                    {/* Payment form */}
+                    <div className="col-md-7">
+                        {/* Method toggle */}
+                        <div style={{ display:'flex', gap:12, marginBottom:28 }}>
+                            <button
+                                type="button"
+                                onClick={() => setPayMethod('card')}
+                                style={{
+                                    flex:1, padding:'12px', borderRadius:'var(--radius-sm)',
+                                    border: payMethod === 'card' ? '2px solid var(--lime)' : '2px solid var(--border)',
+                                    background: payMethod === 'card' ? 'var(--lime-light)' : 'var(--white)',
+                                    fontWeight:600, color:'var(--green-deep)', cursor:'pointer',
+                                    transition:'var(--transition)'
+                                }}
+                            >
+                                💳 Carte bancaire
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setPayMethod('paypal')}
+                                style={{
+                                    flex:1, padding:'12px', borderRadius:'var(--radius-sm)',
+                                    border: payMethod === 'paypal' ? '2px solid var(--lime)' : '2px solid var(--border)',
+                                    background: payMethod === 'paypal' ? 'var(--lime-light)' : 'var(--white)',
+                                    fontWeight:600, color:'var(--green-deep)', cursor:'pointer',
+                                    transition:'var(--transition)'
+                                }}
+                            >
+                                🅿️ PayPal
+                            </button>
                         </div>
-                        <div class="col-lg-4 mb-lg-0 mb-3">
-                            <div class="card_Pay p-3">
-                                <div class="img-box">
-                                    <img src="https://www.freepnglogos.com/uploads/mastercard-png/file-mastercard-logo-svg-wikimedia-commons-4.png"
-                                        alt="" />
+
+                        {payMethod === 'card' ? (
+                            <form onSubmit={handleSubmit}>
+                                <div className="rs-form-group">
+                                    <label className="rs-label">Numéro de carte</label>
+                                    <input
+                                        className="rs-input"
+                                        type="text"
+                                        placeholder="1234 5678 9012 3456"
+                                        maxLength="19"
+                                        value={cardNumber}
+                                        onChange={(e) => setCardNumber(e.target.value)}
+                                    />
                                 </div>
-                                <div class="number">
-                                    <label class="fw-bold">**** **** **** 1060</label>
+                                <div className="rs-form-group">
+                                    <label className="rs-label">Nom sur la carte</label>
+                                    <input
+                                        className="rs-input"
+                                        type="text"
+                                        placeholder="Prénom NOM"
+                                        value={nameCard}
+                                        onChange={(e) => setNameCard(e.target.value)}
+                                    />
                                 </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 mb-lg-0 mb-3">
-                            <div class="card_Pay p-3">
-                                <div class="img-box">
-                                    <img src="https://www.freepnglogos.com/uploads/discover-png-logo/credit-cards-discover-png-logo-4.png"
-                                        alt="" />
-                                </div>
-                                <div class="number">
-                                    <label class="fw-bold">**** **** **** 1060</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 mt-4">
-                            <div class="card_Pay p-3">
-                                <p class="mb-0 fw-bold h4">Payment Methods</p>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="card_Pay p-3">
-                                <div class="card-body_Pay border p-0">
-                                    <p>
-                                        <a class="btn btn-primary w-100 h-100 d-flex align-items-center justify-content-between"
-                                            data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="true"
-                                            aria-controls="collapseExample">
-                                            <span class="fw-bold">PayPal</span>
-                                        </a>
-                                    </p>
-                                    <div class="collapse p-3 pt-0" id="collapseExample">
-                                        <div class="row">
-                                            <div class="col-8">
-                                                <p class="h4 mb-0">Summary</p>
-                                                <p class="mb-0">
-                                                    <span class="fw-bold">Salle:</span>
-                                                    <span className='text text-danger'> {selectedItem.title}</span>
-                                                </p>
-                                                <p class="mb-0">
-                                                    <span class="fw-bold">Price:</span>
-                                                    <span className='text text-danger'> {selectedItem.Prix} DH</span>
-                                                </p>
-                                                <p class="mb-0">
-                                                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Atque
-                                                    nihil neque
-                                                    quisquam aut
-                                                    repellendus, dicta vero? Animi dicta cupiditate, facilis provident quibusdam ab
-                                                    quis,
-                                                    iste harum ipsum hic, nemo qui!
-                                                </p>
-                                            </div>
+                                <div className="row g-3">
+                                    <div className="col-6">
+                                        <div className="rs-form-group">
+                                            <label className="rs-label">Date d'expiration</label>
+                                            <input
+                                                className="rs-input"
+                                                type="text"
+                                                placeholder="MM / AA"
+                                                maxLength="7"
+                                                value={MMYY}
+                                                onChange={(e) => setMMYY(e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="col-6">
+                                        <div className="rs-form-group">
+                                            <label className="rs-label">CVV</label>
+                                            <input
+                                                className="rs-input"
+                                                type="text"
+                                                placeholder="123"
+                                                maxLength="4"
+                                                value={cvvCode}
+                                                onChange={(e) => setCvvCode(e.target.value)}
+                                            />
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card-body_Pay border p-0">
-                                    <p>
-                                        <a class="btn btn-primary p-2 w-100 h-100 d-flex align-items-center justify-content-between"
-                                            data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="true"
-                                            aria-controls="collapseExample">
-                                            <span class="fw-bold">Credit Card</span>
-                                        </a>
-                                    </p>
-                                    <div class="collapse show p-3 pt-0" id="collapseExample">
-                                        <div class="row">
-                                            <div class="col-lg-5 mb-lg-0 mb-3">
-                                                <p class="h4 mb-0">Summary</p>
-                                                <p class="mb-0">
-                                                    <span class="fw-bold">Salle:</span>
-                                                    <span className='text text-danger'> {selectedItem.title}</span>
-                                                </p>
-                                                <p class="mb-0">
-                                                    <span class="fw-bold">Price:</span>
-                                                    <span className='text text-danger'> {selectedItem.Prix} DH</span>
-                                                </p>
-                                                <p class="mb-0">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Atque
-                                                    nihil neque
-                                                    quisquam aut
-                                                    repellendus, dicta vero? Animi dicta cupiditate, facilis provident quibusdam ab
-                                                    quis,
-                                                    iste harum ipsum hic, nemo qui!</p>
-                                            </div>
-                                            <div class="col-lg-7">
-                                                <form action="" class="form" onSubmit={handleSubmit}>
-                                                    <div class="row">
-                                                        <div class="col-12">
-                                                            <div class="form__div">
-                                                                <div className="form-group">
-                                                                    <input type="text" style={{ margin: 10, height: 40, width: 660 }} className="with-bottom-line" placeholder="Card Number" value={cardNumber} onChange={(e) => setCardNumber(e.target.value)} />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <div class="form__div">
-                                                                <div className="form-group">
-                                                                    <input type="text" style={{ margin: 10, height: 40, width: 300 }} className="with-bottom-line" placeholder="MM / yy" value={MMYY} onChange={(e) => setMMYY(e.target.value)} />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <div class="form__div">
-                                                                <div className="form-group">
-                                                                    <input type="text" style={{ margin: 10, height: 40, width: 300 }} className="with-bottom-line" placeholder="cvv code" value={cvvCode} onChange={(e) => setCvvCode(e.target.value)} />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-12">
-                                                            <div class="form__div">
-                                                                <div className="form-group">
-                                                                    <input type="text" style={{ margin: 10, height: 40, width: 660 }} className="with-bottom-line" placeholder="name on the card" value={nameCard} onChange={(e) => setNameCard(e.target.value)} />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-12">
-                                                            <div class="btn btn-danger w-100">Payer {selectedItem.Prix} DH</div>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
+
+                                <div style={{ marginTop:8, padding:'12px 16px', background:'var(--lime-light)', borderRadius:'var(--radius-sm)', fontSize:'0.85rem', color:'var(--green-deep)', display:'flex', gap:8, alignItems:'center' }}>
+                                    🔒 Paiement 100% sécurisé — vos données sont chiffrées
                                 </div>
+                            </form>
+                        ) : (
+                            <div style={{ textAlign:'center', padding:'40px 24px', background:'var(--bg)', borderRadius:'var(--radius-md)', border:'1.5px solid var(--border)' }}>
+                                <div style={{ fontSize:'3rem', marginBottom:16 }}>🅿️</div>
+                                <p style={{ color:'var(--text-secondary)', marginBottom:0 }}>
+                                    Vous serez redirigé vers PayPal pour compléter le paiement.
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Summary */}
+                    <div className="col-md-5">
+                        <div className="booking-summary">
+                            <h5>Récapitulatif</h5>
+                            <div className="booking-summary-row">
+                                <span className="label">Terrain</span>
+                                <span className="value">{selectedItem.title}</span>
+                            </div>
+                            <div className="booking-summary-row">
+                                <span className="label">Date</span>
+                                <span className="value">{selectedDate}/{displayedMonth}/{displayedYear}</span>
+                            </div>
+                            <div className="booking-summary-row">
+                                <span className="label">Heure</span>
+                                <span className="value">{selectedTime}:00 {selectedTime < 12 ? 'AM' : 'PM'}</span>
+                            </div>
+                            <div className="booking-summary-row booking-summary-total" style={{ marginTop:8 }}>
+                                <span className="label">Total à payer</span>
+                                <span className="value">{selectedItem.Prix} dh</span>
+                            </div>
+                            <div style={{ marginTop:24 }}>
+                                <button
+                                    type="button"
+                                    className="btn-rs-primary btn-rs-full"
+                                    onClick={handleSubmit}
+                                >
+                                    Payer {selectedItem.Prix} dh →
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <Footer />
-        </>
+        </div>
     );
 }

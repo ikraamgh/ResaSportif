@@ -14,66 +14,85 @@ export default function Login() {
             setErrorMessage('Veuillez remplir tous les champs.');
             return;
         }
+        setErrorMessage('');
         setIsLoggedIn(true);
     };
 
     return (
-        <>
+        <div className="page-wrapper">
             <Header />
-            <div className="signup-page" style={{ backgroundImage: `url('./PROJET_CC3/background.jpg')`, width: '100%' }}>
-                <div className='card_S'>
-                    <div className="back-button">
-                        <Link to={`/`}>
-                            <img src={"./PROJET_CC3/en-arriere.png"} alt="Back" style={{ width: '30px' }} />
-                        </Link>
+            <div className="auth-page">
+                <div className="auth-card">
+                    <Link to="/" className="auth-back">← Retour à l'accueil</Link>
+
+                    <div className="auth-brand">
+                        <span className="auth-brand-text"><span>Resa</span>Sportif</span>
                     </div>
-                    <h1 className='text-center '>S'inscrire</h1>
-                    <form className="card_S2">
-                        <label><h6>Nom utilisateur: </h6></label>
-                        <br />
-                        <input className='form-control px-3' type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
 
-                        <label><h6>Adresse Email: </h6></label>
-                        <br />
-                        <input className='form-control ' type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                    <h2 className="auth-title">Créer un compte</h2>
+                    <p className="auth-subtitle">Rejoignez ResaSportif et réservez vos terrains facilement.</p>
 
-                        <label><h6>Mot de passe: </h6></label>
-                        <br />
-                        <input className='form-control ' type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-
-                        <br />
-                    </form>
-                    <div className="d-flex justify-content-center">
-                        <button className='btn btn-danger' style={{ width: 300 }} type="button" onClick={handleSignUp}>
-                            <b>S'inscrire</b>
-                        </button>
+                    <div className="rs-form-group">
+                        <label className="rs-label">Nom d'utilisateur</label>
+                        <input
+                            className="rs-input"
+                            type="text"
+                            placeholder="Votre nom d'utilisateur"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                        />
                     </div>
+
+                    <div className="rs-form-group">
+                        <label className="rs-label">Adresse Email</label>
+                        <input
+                            className="rs-input"
+                            type="email"
+                            placeholder="vous@exemple.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                    </div>
+
+                    <div className="rs-form-group">
+                        <label className="rs-label">Mot de passe</label>
+                        <input
+                            className="rs-input"
+                            type="password"
+                            placeholder="Minimum 8 caractères"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                    </div>
+
                     {errorMessage && (
-                        <div className="text-danger text-center mt-3">
+                        <div style={{ color:'#dc2626', fontSize:'0.88rem', marginBottom:16, padding:'10px 14px', background:'#fef2f2', borderRadius:'var(--radius-sm)', border:'1px solid #fecaca' }}>
                             {errorMessage}
                         </div>
                     )}
+
                     {isLoggedIn && (
                         <Link to="/">
-                        <div className="text-success text-center mt-3">
-                            Connexion réussie ! Redirection vers la page d'accueil...
-                        </div>
+                            <div style={{ color:'#16a34a', fontSize:'0.88rem', marginBottom:16, padding:'10px 14px', background:'#f0fdf4', borderRadius:'var(--radius-sm)', border:'1px solid #bbf7d0' }}>
+                                ✓ Inscription réussie ! Redirection...
+                            </div>
                         </Link>
                     )}
-                    <br />
-                    <div className="login-separator-wrapper">
-                        <div className="login-separator-component split-line">
-                            <span className="separator-line"></span>
-                            <h5>Ou connectez-vous avec</h5>
-                            <span className="separator-line"></span>
-                        </div>
+
+                    <button className="btn-rs-primary btn-rs-full" style={{ marginBottom:20 }} onClick={handleSignUp}>
+                        S'inscrire →
+                    </button>
+
+                    <div style={{ textAlign:'center', borderTop:'1px solid var(--border)', paddingTop:20 }}>
+                        <p style={{ color:'var(--text-secondary)', fontSize:'0.9rem', marginBottom:0 }}>
+                            Déjà un compte ?{' '}
+                            <Link to="/signup" style={{ color:'var(--green-deep)', fontWeight:700 }}>
+                                Se connecter
+                            </Link>
+                        </p>
                     </div>
-                    <br />
-                    <h6 className="card_S3">
-                        Don't have an account? <span className="text-danger font-weight-bold"><Link to="/signup">Sign up</Link></span>
-                    </h6>
                 </div>
             </div>
-        </>
-    )
-};
+        </div>
+    );
+}
