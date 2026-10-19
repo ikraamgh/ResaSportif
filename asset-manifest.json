@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/ResaSportif/static/css/main.25ca9580.css",
-    "main.js": "/ResaSportif/static/js/main.161b0ec9.js",
+    "main.css": "/ResaSportif/static/css/main.827f7395.css",
+    "main.js": "/ResaSportif/static/js/main.882cebb4.js",
     "index.html": "/ResaSportif/index.html",
-    "main.25ca9580.css.map": "/ResaSportif/static/css/main.25ca9580.css.map",
-    "main.161b0ec9.js.map": "/ResaSportif/static/js/main.161b0ec9.js.map"
+    "main.827f7395.css.map": "/ResaSportif/static/css/main.827f7395.css.map",
+    "main.882cebb4.js.map": "/ResaSportif/static/js/main.882cebb4.js.map"
   },
   "entrypoints": [
-    "static/css/main.25ca9580.css",
-    "static/js/main.161b0ec9.js"
+    "static/css/main.827f7395.css",
+    "static/js/main.882cebb4.js"
   ]
 }
