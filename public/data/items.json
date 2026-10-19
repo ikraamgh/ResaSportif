@@ -1,0 +1,51 @@
+[
+  {
+    "id": "1",
+    "title": "Football",
+    "description": "Un terrain de football en gazon synthétique, idéal pour les matchs et entraînements. Disponible pour les équipes de 5 à 11 joueurs.",
+    "Prix": 150,
+    "image": "./PROJET_CC3/foot.jpeg"
+  },
+  {
+    "id": "2",
+    "title": "Basketball",
+    "description": "Salle de basketball avec parquet professionnel et paniers réglementaires. Parfaite pour les entraînements et compétitions.",
+    "Prix": 120,
+    "image": "./PROJET_CC3/Basket.webp"
+  },
+  {
+    "id": "3",
+    "title": "Tennis",
+    "description": "Court de tennis en dur avec éclairage nocturne. Raquettes disponibles sur demande.",
+    "Prix": 100,
+    "image": "./PROJET_CC3/tennis.jpg"
+  },
+  {
+    "id": "4",
+    "title": "Natation",
+    "description": "Piscine olympique de 50 mètres avec couloirs séparés. Cours de natation disponibles.",
+    "Prix": 80,
+    "image": "./PROJET_CC3/piscine.jpg"
+  },
+  {
+    "id": "5",
+    "title": "Handball",
+    "description": "Salle polyvalente pour le handball avec sol antidérapant et vestiaires équipés.",
+    "Prix": 110,
+    "image": "./PROJET_CC3/hand.jpg"
+  },
+  {
+    "id": "6",
+    "title": "Volleyball",
+    "description": "Terrain de volleyball intérieur avec filets réglementaires. Idéal pour les entraînements et tournois.",
+    "Prix": 90,
+    "image": "./PROJET_CC3/volley.jpg"
+  },
+  {
+    "id": "7",
+    "title": "Danse",
+    "description": "Studio de danse avec miroirs, barres et parquet flottant. Parfait pour tous styles de danse.",
+    "Prix": 70,
+    "image": "./PROJET_CC3/dance.png"
+  }
+]
