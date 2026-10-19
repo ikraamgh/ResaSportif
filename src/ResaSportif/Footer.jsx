@@ -42,19 +42,14 @@ export default function Footer() {
                     <div className="col-lg-4 col-md-6">
                         <h6>Contact</h6>
                         <div className="rs-footer-contact-item">
-                            <span className="contact-icon">📍</span>
-                            <span>444 S. Cedros Ave, Solana Beach, California</span>
-                        </div>
-                        <div className="rs-footer-contact-item">
-                            <span className="contact-icon">📞</span>
-                            <span>+1.555.555.5555</span>
-                        </div>
-                        <div className="rs-footer-contact-item">
                             <span className="contact-icon">✉️</span>
-                            <a href="mailto:support@resasportif.com" style={{color:'inherit'}}>
-                                support@resasportif.com
+                            <a href="mailto:contact@resasportif.ma" style={{ color: 'inherit' }}>
+                                contact@resasportif.ma
                             </a>
                         </div>
+                        <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.82rem', marginTop: 16, lineHeight: 1.6 }}>
+                            Pour toute question, utilisez le formulaire de contact disponible sur la page d'accueil.
+                        </p>
                     </div>
                 </div>
             </div>

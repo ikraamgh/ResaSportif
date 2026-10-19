@@ -7,12 +7,6 @@ import { Header } from './Header';
 import { Link } from 'react-router-dom';
 import Footer from './Footer';
 
-const avis = [
-    { id: 1, nom: 'Ahmed', avis: 'Très satisfait de la qualité de votre service. Réservation rapide et sans problème.' },
-    { id: 2, nom: 'Said', avis: 'Les prix sont corrects et le terrain est superbe. Je recommande vivement !' },
-    { id: 3, nom: 'Achraf', avis: 'La location s\'est faite rapidement et en toute sécurité. Excellent service.' },
-];
-
 const Home = () => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const images = [
@@ -27,9 +21,7 @@ const Home = () => {
 
     useEffect(() => {
         const intervalId = setInterval(() => {
-            setCurrentImageIndex((prevIndex) =>
-                prevIndex === images.length - 1 ? 0 : prevIndex + 1
-            );
+            setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
         }, 3000);
         return () => clearInterval(intervalId);
     }, [images.length]);
@@ -38,29 +30,48 @@ const Home = () => {
 
     useEffect(() => {
         fetch(`/data/items.json`)
-            .then((response) => response.json())
-            .then((items) => { dispatch(setListItems(items)); });
+            .then((r) => r.json())
+            .then((items) => dispatch(setListItems(items)));
     }, [dispatch]);
 
     const items = useSelector((state) => state.items.listItems);
 
+    // ── Search / Filter state ──
+    const [searchSport, setSearchSport] = useState('');
+    const [searchDate, setSearchDate] = useState('');
+
+    const filteredItems = items.filter((item) => {
+        const matchSport = !searchSport || item.title === searchSport;
+        return matchSport; // date filter is UX only (no backend) — still scrolls to section
+    });
+
+    const handleSearch = (e) => {
+        e.preventDefault();
+        document.getElementById('terrains')?.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    // ── Avis state — starts empty (no fake data) ──
+    const [avisState, setAvisState] = useState([]);
     const [userAvis, setUserAvis] = useState('');
     const [userEmail, setUserEmail] = useState('');
     const [userNom, setUserNom] = useState('');
-    const [avisState, setAvisState] = useState(avis);
-    const [message, setMessage] = useState('');
-    const [phone, setPhone] = useState('');
-
-    const handleSubmit = (e) => { e.preventDefault(); };
+    const [avisSuccess, setAvisSuccess] = useState(false);
 
     const addAvis = () => {
         if (!userNom.trim() || !userAvis.trim()) return;
-        const newAvis = { id: avisState.length + 1, nom: userNom, avis: userAvis };
-        setAvisState([...avisState, newAvis]);
-        setUserAvis('');
-        setUserEmail('');
-        setUserNom('');
+        setAvisState([...avisState, { id: Date.now(), nom: userNom, avis: userAvis }]);
+        setUserAvis(''); setUserEmail(''); setUserNom('');
+        setAvisSuccess(true);
+        setTimeout(() => setAvisSuccess(false), 3000);
     };
+
+    // ── Contact ──
+    const [message, setMessage] = useState('');
+    const [phone, setPhone] = useState('');
+    const handleSubmit = (e) => { e.preventDefault(); };
+
+    // Today's date for date input min
+    const today = new Date().toISOString().split('T')[0];
 
     return (
         <div className="page-wrapper">
@@ -68,32 +79,48 @@ const Home = () => {
 
             {/* ── Hero ── */}
             <section className="rs-hero">
-                <img
-                    src={images[currentImageIndex]}
-                    alt="Sports facility"
-                    className="rs-hero-image"
-                />
+                <img src={images[currentImageIndex]} alt="Terrain de sport" className="rs-hero-image" />
                 <div className="rs-hero-overlay" />
-                <div className="container">
+                <div className="container" style={{ position: 'relative', zIndex: 2 }}>
                     <div className="rs-hero-content">
-                        <div className="rs-hero-badge">Plateforme #1 de réservation sportive</div>
+                        <div className="rs-hero-badge">Plateforme de réservation sportive</div>
                         <h1>
                             Trouvez votre terrain.<br />
                             <span className="lime-word">Réservez</span> en quelques clics.
                         </h1>
-                        <p>
-                            Accédez aux meilleurs terrains de sport près de chez vous.
-                            Football, basketball, tennis et bien plus encore.
-                        </p>
-                        <div className="rs-hero-actions">
-                            <Link to="/login">
-                                <button className="btn-rs-primary">Réserver maintenant →</button>
-                            </Link>
-                            <a href="#salles">
-                                <button className="btn-rs-outline">Voir les terrains</button>
-                            </a>
-                        </div>
+                        <p>Football, basketball, tennis, natation et bien plus — réservez votre créneau directement en ligne.</p>
                     </div>
+
+                    {/* ── Search Bar ── */}
+                    <form className="hero-search-bar" onSubmit={handleSearch}>
+                        <div className="hero-search-field">
+                            <label className="hero-search-label">Sport</label>
+                            <select
+                                className="hero-search-input"
+                                value={searchSport}
+                                onChange={(e) => setSearchSport(e.target.value)}
+                            >
+                                <option value="">Tous les sports</option>
+                                {items.map((item) => (
+                                    <option key={item.id} value={item.title}>{item.title}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="hero-search-divider" />
+                        <div className="hero-search-field">
+                            <label className="hero-search-label">Date</label>
+                            <input
+                                className="hero-search-input"
+                                type="date"
+                                min={today}
+                                value={searchDate}
+                                onChange={(e) => setSearchDate(e.target.value)}
+                            />
+                        </div>
+                        <button type="submit" className="hero-search-btn">
+                            Rechercher
+                        </button>
+                    </form>
                 </div>
             </section>
 
@@ -101,59 +128,74 @@ const Home = () => {
             <section className="advantages-section">
                 <div className="container">
                     <div className="row g-4">
-                        <div className="col-md-4">
-                            <div className="advantage-card">
-                                <div className="advantage-icon">
-                                    <img src="PROJET_CC3/icone-avantage1.png" alt="Facilité" />
+                        {[
+                            { img: 'icone-avantage1.png', title: 'Réservation en 2 minutes', desc: 'Choisissez votre sport, votre date et confirmez — sans paperasse.' },
+                            { img: 'icone-avantage2.png', title: 'Large choix de terrains', desc: '7 disciplines sportives disponibles dans notre réseau.' },
+                            { img: 'icone-avantage3.png', title: 'Paiement sécurisé', desc: 'Carte bancaire ou PayPal — vos données sont chiffrées.' },
+                        ].map((adv) => (
+                            <div className="col-md-4" key={adv.title}>
+                                <div className="advantage-card">
+                                    <div className="advantage-icon">
+                                        <img src={`PROJET_CC3/${adv.img}`} alt={adv.title} />
+                                    </div>
+                                    <h6>{adv.title}</h6>
+                                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: 8 }}>{adv.desc}</p>
                                 </div>
-                                <h6>Facilité de Réservation</h6>
-                                <p style={{color:'var(--text-secondary)', fontSize:'0.9rem', marginTop:8}}>
-                                    Réservez votre terrain en moins de 2 minutes, 24h/24.
-                                </p>
                             </div>
-                        </div>
-                        <div className="col-md-4">
-                            <div className="advantage-card">
-                                <div className="advantage-icon">
-                                    <img src="PROJET_CC3/icone-avantage2.png" alt="Diversité" />
-                                </div>
-                                <h6>Diversité d'Installations</h6>
-                                <p style={{color:'var(--text-secondary)', fontSize:'0.9rem', marginTop:8}}>
-                                    Plus de 7 types de sports disponibles dans notre réseau.
-                                </p>
-                            </div>
-                        </div>
-                        <div className="col-md-4">
-                            <div className="advantage-card">
-                                <div className="advantage-icon">
-                                    <img src="PROJET_CC3/icone-avantage3.png" alt="Compte" />
-                                </div>
-                                <h6>Gestion de Compte</h6>
-                                <p style={{color:'var(--text-secondary)', fontSize:'0.9rem', marginTop:8}}>
-                                    Gérez vos réservations et votre historique facilement.
-                                </p>
-                            </div>
-                        </div>
+                        ))}
                     </div>
                 </div>
             </section>
 
-            {/* ── Salles ── */}
-            <section className="salles-section" id="salles">
+            {/* ── Comment ça marche ── */}
+            <section style={{ background: 'var(--green-deep)', padding: '64px 0' }}>
                 <div className="container">
-                    <p className="section-subtitle text-center" style={{textAlign:'center', marginBottom:4}}>NOS INSTALLATIONS</p>
-                    <h2 className="section-title text-center" style={{textAlign:'center', marginBottom:48}}>
-                        Salles Disponibles
+                    <h2 className="section-title text-center" style={{ color: '#fff', marginBottom: 48, textAlign: 'center' }}>
+                        Comment réserver ?
                     </h2>
+                    <div className="row g-4 text-center">
+                        {[
+                            { n: '1', t: 'Choisissez un terrain', d: 'Parcourez les terrains disponibles et sélectionnez celui qui vous convient.' },
+                            { n: '2', t: 'Sélectionnez une date', d: 'Choisissez le jour et le créneau horaire qui vous correspond.' },
+                            { n: '3', t: 'Confirmez et payez', d: 'Renseignez vos coordonnées et finalisez en quelques secondes.' },
+                        ].map((step) => (
+                            <div className="col-md-4" key={step.n}>
+                                <div style={{ color: 'var(--lime)', fontSize: '2.5rem', fontWeight: 800, lineHeight: 1, marginBottom: 14 }}>{step.n}</div>
+                                <h5 style={{ color: '#fff', fontWeight: 700, marginBottom: 10 }}>{step.t}</h5>
+                                <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.92rem', margin: 0 }}>{step.d}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ── Terrains ── */}
+            <section className="salles-section" id="terrains">
+                <div className="container">
+                    <p className="section-subtitle" style={{ textAlign: 'center', marginBottom: 4 }}>
+                        {searchSport ? `Sport filtré : ${searchSport}` : 'TOUS NOS TERRAINS'}
+                    </p>
+                    <h2 className="section-title" style={{ textAlign: 'center', marginBottom: 48 }}>
+                        Terrains disponibles
+                    </h2>
+
                     {items.length === 0 ? (
-                        <div className="text-center" style={{padding:'60px 0', color:'var(--text-secondary)'}}>
-                            <div style={{fontSize:'2rem', marginBottom:12}}>⏳</div>
-                            <p>Chargement des terrains...</p>
+                        <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--text-secondary)' }}>
+                            <div style={{ fontSize: '2rem', marginBottom: 12 }}>⏳</div>
+                            <p>Chargement des terrains…</p>
+                        </div>
+                    ) : filteredItems.length === 0 ? (
+                        <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--text-secondary)' }}>
+                            <div style={{ fontSize: '2rem', marginBottom: 12 }}>🔍</div>
+                            <p>Aucun terrain trouvé pour <strong>{searchSport}</strong>.</p>
+                            <button className="btn-rs-primary" style={{ marginTop: 16 }} onClick={() => setSearchSport('')}>
+                                Voir tous les terrains
+                            </button>
                         </div>
                     ) : (
                         <div className="row g-4">
-                            {items.map((item, index) => (
-                                <div className="col-md-4 col-sm-6" key={index}>
+                            {filteredItems.map((item) => (
+                                <div className="col-md-4 col-sm-6" key={item.id}>
                                     <Item
                                         id={item.id}
                                         title={item.title}
@@ -171,40 +213,58 @@ const Home = () => {
             {/* ── Avis ── */}
             <section className="avis-section" id="avis">
                 <div className="container">
-                    <p className="section-subtitle text-center" style={{textAlign:'center', marginBottom:4}}>CE QUE DISENT NOS CLIENTS</p>
-                    <h2 className="section-title text-center" style={{textAlign:'center', marginBottom:40}}>Avis Clients</h2>
+                    <p className="section-subtitle" style={{ textAlign: 'center', marginBottom: 4 }}>RETOURS DE NOS UTILISATEURS</p>
+                    <h2 className="section-title" style={{ textAlign: 'center', marginBottom: 40 }}>Avis clients</h2>
 
-                    <div className="avis-container">
-                        {avisState.map((avi) => (
-                            <div className="avis-card" key={avi.id}>
-                                <h2>{avi.nom}</h2>
-                                <h6>{avi.avis}</h6>
-                            </div>
-                        ))}
-                    </div>
+                    {avisState.length === 0 ? (
+                        <div style={{ textAlign: 'center', padding: '32px 24px', background: 'var(--bg)', border: '1.5px dashed var(--border)', borderRadius: 'var(--radius-md)', maxWidth: 520, margin: '0 auto 40px' }}>
+                            <div style={{ fontSize: '2rem', marginBottom: 12 }}>💬</div>
+                            <p style={{ color: 'var(--text-secondary)', margin: 0, fontSize: '0.95rem' }}>
+                                Les avis de nos utilisateurs apparaîtront ici.<br />
+                                Soyez le premier à partager votre expérience !
+                            </p>
+                        </div>
+                    ) : (
+                        <div className="avis-container" style={{ marginBottom: 40 }}>
+                            {avisState.map((avi) => (
+                                <div className="avis-card" key={avi.id}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+                                        <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--lime)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: 'var(--green-deep)', fontSize: '0.9rem', flexShrink: 0 }}>
+                                            {avi.nom.charAt(0).toUpperCase()}
+                                        </div>
+                                        <strong style={{ color: 'var(--green-deep)' }}>{avi.nom}</strong>
+                                    </div>
+                                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', margin: 0, lineHeight: 1.6 }}>{avi.avis}</p>
+                                </div>
+                            ))}
+                        </div>
+                    )}
 
-                    <hr style={{borderColor:'var(--border)', margin:'32px 0'}} />
+                    <hr style={{ borderColor: 'var(--border)', margin: '32px 0' }} />
 
                     <div className="avis-form">
-                        <h5 style={{fontWeight:700, color:'var(--green-deep)', marginBottom:4}}>Partagez votre expérience</h5>
-                        <p style={{color:'var(--text-secondary)', fontSize:'0.9rem', marginBottom:20}}>
-                            Votre avis nous aide à nous améliorer.
-                        </p>
+                        <h5 style={{ fontWeight: 700, color: 'var(--green-deep)', marginBottom: 4 }}>Partagez votre expérience</h5>
+                        <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: 20 }}>Votre avis aide les autres utilisateurs.</p>
+
+                        {avisSuccess && (
+                            <div style={{ padding: '10px 16px', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 'var(--radius-sm)', color: '#16a34a', fontSize: '0.88rem', marginBottom: 16 }}>
+                                ✓ Votre avis a été publié !
+                            </div>
+                        )}
+
                         <div className="rs-form-group">
-                            <label className="rs-label">Votre nom</label>
-                            <input className="rs-input" type="text" placeholder="Ex: Ahmed" value={userNom} onChange={(e) => setUserNom(e.target.value)} />
+                            <label className="rs-label">Votre nom *</label>
+                            <input className="rs-input" type="text" placeholder="Prénom ou pseudo" value={userNom} onChange={(e) => setUserNom(e.target.value)} />
                         </div>
                         <div className="rs-form-group">
-                            <label className="rs-label">Votre email</label>
+                            <label className="rs-label">Email (optionnel)</label>
                             <input className="rs-input" type="email" placeholder="vous@exemple.com" value={userEmail} onChange={(e) => setUserEmail(e.target.value)} />
                         </div>
                         <div className="rs-form-group">
-                            <label className="rs-label">Votre avis</label>
-                            <textarea className="rs-textarea" placeholder="Partagez votre expérience..." value={userAvis} onChange={(e) => setUserAvis(e.target.value)} />
+                            <label className="rs-label">Votre avis *</label>
+                            <textarea className="rs-textarea" placeholder="Décrivez votre expérience avec ResaSportif…" value={userAvis} onChange={(e) => setUserAvis(e.target.value)} />
                         </div>
-                        <button className="btn-rs-primary btn-rs-full" onClick={addAvis}>
-                            Publier mon avis
-                        </button>
+                        <button className="btn-rs-primary btn-rs-full" onClick={addAvis}>Publier mon avis</button>
                     </div>
                 </div>
             </section>
@@ -214,22 +274,22 @@ const Home = () => {
                 <div className="container">
                     <div className="row align-items-center g-5">
                         <div className="col-md-6">
-                            <p className="section-subtitle" style={{marginBottom:4}}>NOUS CONTACTER</p>
-                            <h2 className="section-title" style={{marginBottom:16}}>Avez-vous quelque chose à dire?</h2>
-                            <p style={{color:'var(--text-secondary)', lineHeight:1.7}}>
-                                Faites-nous part de vos questions, suggestions et préoccupations
-                                en remplissant le formulaire de contact ci-dessous.
+                            <p className="section-subtitle" style={{ marginBottom: 4 }}>NOUS CONTACTER</p>
+                            <h2 className="section-title" style={{ marginBottom: 16 }}>Une question ?</h2>
+                            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+                                Pour toute demande d'information, suggestion ou problème technique,
+                                remplissez le formulaire et nous vous répondrons dans les meilleurs délais.
                             </p>
                         </div>
                         <div className="col-md-6">
                             <form onSubmit={handleSubmit}>
                                 <div className="rs-form-group">
-                                    <label className="rs-label">Téléphone</label>
+                                    <label className="rs-label">Téléphone (optionnel)</label>
                                     <input className="rs-input" type="tel" placeholder="+212 6XX XXX XXX" value={phone} onChange={(e) => setPhone(e.target.value)} />
                                 </div>
                                 <div className="rs-form-group">
-                                    <label className="rs-label">Message</label>
-                                    <textarea className="rs-textarea" placeholder="Votre message..." value={message} onChange={(e) => setMessage(e.target.value)} />
+                                    <label className="rs-label">Message *</label>
+                                    <textarea className="rs-textarea" placeholder="Votre message…" value={message} onChange={(e) => setMessage(e.target.value)} />
                                 </div>
                                 <button type="submit" className="btn-rs-dark">Envoyer le message</button>
                             </form>
