@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { HashRouter, Route, Routes } from "react-router-dom";
 import Home from "./Home";
 import Details from "./Details";
 import { Provider } from "react-redux";
@@ -14,7 +14,7 @@ import Item from "./Item";
 export default function Root() {
     return (
         <Provider store={store}>
-            <BrowserRouter>
+            <HashRouter>
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/Services" element={<Item />} />
@@ -25,7 +25,7 @@ export default function Root() {
                     <Route path="Details/Reservation/Informations/:id/:selectedDate/:displayedMonth/:displayedYear/:selectedTime/" element={<Informations />} />
                     <Route path="/Payement/:id" element={<Payement />} />
                 </Routes>
-            </BrowserRouter>
+            </HashRouter>
         </Provider>
     );
 }
